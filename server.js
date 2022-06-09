@@ -13,11 +13,13 @@ app.get('/api', (req, res) => {
     const ti = req.query.t
     const str = req.query.s
     const targ = req.query.ta
+    const dif = req.query.dif
     const swimObj = {
         distance: di,
         time: ti,
         mainStroke: str,
         target: targ,
+        difficulty: dif
     }
     res.status(200)
     res.send(swimObj)
@@ -25,4 +27,4 @@ app.get('/api', (req, res) => {
     // const swim = new Workout(distance, time, stroke, target)
 })
 
-// http://localhost:3000/api?d=5000&t=120&s=fr&ta=spr
+// http://localhost:3000/api?d=5000&t=120&s=fr&ta=spr&dif=adv

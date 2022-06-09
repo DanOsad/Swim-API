@@ -1,9 +1,10 @@
 class Swim {
-    constructor( distance, time, mainStroke, target ) {
+    constructor( distance, time, mainStroke, target, difficulty ) {
         this.distance = distance // meters
         this.time = time // minutes
         this.mainStroke = mainStroke // [fr,fl,ba,br]
         this.target = target // [sprint, endurance, drill]
+        this.difficulty = difficulty // [beg, adv, exp]
         this.strokeList = [ 'fr', 'fl', 'ba', 'br', 'im' ]
         this.targetList = [ 'spr', 'end', 'dri' ]
         this.swimSchema = {
