@@ -1,6 +1,8 @@
 const express = require('express')
 const bp = require('body-parser')
 const app = express()
+const swim = require('./maths')
+const Swim = require('./maths')
 const PORT = 3000
 
 app.listen(process.env.PORT || PORT, () => console.log(`Listening on port ${PORT}...`))
@@ -14,17 +16,9 @@ app.get('/api', (req, res) => {
     const str = req.query.s
     const targ = req.query.ta
     const dif = req.query.dif
-    const swimObj = {
-        distance: di,
-        time: ti,
-        mainStroke: str,
-        target: targ,
-        difficulty: dif
-    }
+    let workout = new Swim(di,ti,str,targ,dif)
     res.status(200)
-    res.send(swimObj)
-    console.log(swimObj)
-    // const swim = new Workout(distance, time, stroke, target)
+    res.send(workout.buildWorkout())
 })
 
 // http://localhost:3000/api?d=5000&t=120&s=fr&ta=spr&dif=adv

@@ -138,13 +138,6 @@ class Swim {
         let keys = Object.keys(setType)
         return setType[keys[Math.floor(Math.random()*keys.length)]]
     }
-    // returnWorkoutObject() {
-    //     return {
-    //         warmUp: "",
-    //         mainSet: "",
-    //         coolDown: "",
-    //     }
-    // }
     outputList() {
         return [this.distance, this.time, this.mainStroke, this.target]
     }
@@ -162,16 +155,13 @@ class Swim {
         swim.coolDown.time = this.getCoolDownTime()
 
         /* warmUp logic */
-        // get random warmUp set
-        swim.warmUp.set = this.randomSet(this.warmUpSets)
+        swim.warmUp.set = this.randomSet(this.warmUpSets) // get random warmUp set
         
         /* mainSet logic */
-        // get random mainSet
-        swim.mainSet.set = this.randomSet(this.mainSets)
+        swim.mainSet.set = this.randomSet(this.mainSets) // get random mainSet
         
         /* coolDown logic */
-        // get random coolDown set
-        swim.coolDown.set = this.randomSet(this.coolDownSets)
+        swim.coolDown.set = this.randomSet(this.coolDownSets) // get random coolDown set
 
 
         // stroke logic
@@ -205,7 +195,5 @@ class Swim {
     }
 }
 
-const workout = new Swim(5000, 120, 'br', 'drill')
-
-console.log(workout.buildWorkout())
-// console.log(workout.randomSet(workout.coolDownSets))
+// EXPORT
+module.exports = Swim
