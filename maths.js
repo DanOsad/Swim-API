@@ -4,7 +4,7 @@ class Swim {
         this.time = time // minutes
         this.mainStroke = mainStroke // [fr,fl,ba,br]
         this.target = target // [sprint, endurance, drill]
-        this.strokeList = [ 'fr', 'fl', 'ba', 'br' ]
+        this.strokeList = [ 'fr', 'fl', 'ba', 'br', 'im' ]
         this.targetList = [ 'spr', 'end', 'dri' ]
         this.swimSchema = {
                             warmUp: {
@@ -26,14 +26,76 @@ class Swim {
                                 distance: "int",
                             }
                         }
+        this.warmUpSets = {
+                        easy: {
+                            name: "Easy",
+                            reps: 4,
+                            pace: "int" , // calculated later
+                            rest: "int", // calculated later
+                        },
+                        kick: {
+                            name: "Kick",
+                            reps: 10,
+                            pace: "int" , // calculated later
+                            rest: "int", // calculated later
+                        },
+                        buildUp: {
+                            name: "Build-Up",
+                            reps: 10,
+                            pace: "int" , // calculated later
+                            rest: "int", // calculated later
+                        },
+        }
         this.mainSets = {
                         ladder: {
-                                reps: 6,
-                                distancePerRep: this.getMainSetDistance() / mainSets.ladder.reps,
-                                pace: "int" ,
-                                rest: "int"
-                                },
-                        }
+                            name: "Ladder",
+                            reps: 6,
+                            pace: "int" , // calculated later
+                            rest: "int", // calculated later
+                        },
+                        timedSprints: {
+                            name: "Timed Sprints",
+                            reps: 10,
+                            pace: "int" , // calculated later
+                            rest: "int", // calculated later
+                        },
+                        highEffort: {
+                            name: "High Effort",
+                            reps: 5,
+                            pace: "int" , // calculated later
+                            rest: "int", // calculated later
+                        },
+                        distance: {
+                            name: "Distance",
+                            reps: 1,
+                            pace: "int" , // calculated later
+                            rest: "int", // calculated later
+                        },
+        }
+        this.coolDownSets = {
+                        ladder: {
+                            name: "Ladder",
+                            reps: 5,
+                            pace: "int" , // calculated later
+                            rest: "int", // calculated later
+                        },
+                        buildDown: {
+                            name: "Build-Down",
+                            reps: 5,
+                            pace: "int" , // calculated later
+                            rest: "int", // calculated later
+                        },
+                        distance: {
+                            name: "Distance",
+                            reps: 1,
+                            pace: "int" , // calculated later
+                            rest: "int", // calculated later
+                        },
+        }
+    }
+    calculateSet(set) {
+        // this.calculateSet(this.mainSets[`${set}`]) -> USAGE
+        // if (this.)
     }
     splitDistance() {
         let warmUp = this.distance / 4 // 25%
@@ -71,6 +133,10 @@ class Swim {
     convertTimeToHours() {
         return Math.floor(this.time / 60)
     }
+    randomSet(setType) {
+        let keys = Object.keys(setType)
+        return setType[keys[Math.floor(Math.random()*keys.length)]]
+    }
     // returnWorkoutObject() {
     //     return {
     //         warmUp: "",
@@ -93,111 +159,52 @@ class Swim {
         swim.warmUp.time = this.getWarmUpTime()
         swim.mainSet.time = this.getMainSetTime()
         swim.coolDown.time = this.getCoolDownTime()
-    
+
+        /* warmUp logic */
+        // get random warmUp set
+        swim.warmUp.set = this.randomSet(this.warmUpSets)
+        
+        /* mainSet logic */
+        // get random mainSet
+        swim.mainSet.set = this.randomSet(this.mainSets)
+        
+        /* coolDown logic */
+        // get random coolDown set
+        swim.coolDown.set = this.randomSet(this.coolDownSets)
+
+
         // stroke logic
-        if (swimObj.mainStroke == 'fr') {
+        if (this.mainStroke == 'fr') {
             swim.warmUp.stroke = 'Freestyle'
             swim.mainSet.stroke = 'Freestyle'
             swim.coolDown.stroke = 'Freestyle'
             
-        } else if (swimObj.mainStroke == 'fl') {
+        } else if (this.mainStroke == 'fl') {
             swim.warmUp.stroke = 'Freestyle'
             swim.mainSet.stroke = 'Butterfly'
             swim.coolDown.stroke = 'Freestyle'
             
-        } else if (swimObj.mainStroke == 'ba') {
+        } else if (this.mainStroke == 'ba') {
             swim.warmUp.stroke = 'Freestyle'
             swim.mainSet.stroke = 'Backstroke'
             swim.coolDown.stroke = 'Freestyle'
             
-        } else if (swimObj.mainStroke == 'br') {
+        } else if (this.mainStroke == 'br') {
             swim.warmUp.stroke = 'Freestyle'
             swim.mainSet.stroke = 'Breaststroke'
             swim.coolDown.stroke = 'Freestyle'
     
+        } else if (this.mainStroke == 'im') {
+            swim.warmUp.stroke = 'Freestyle'
+            swim.mainSet.stroke = 'Individual Medley'
+            swim.coolDown.stroke = 'Freestyle'
+    
         }
-}
-
-let workout = new Swim(5000, 120, 'br', 'drill')
-
-// console.log(swim.splitTime())
-// console.log(swim.getMainSetDistance())
-// console.log(swim.convertTimeToSeconds())
-// console.log(swim.convertTimeToHours())
-
-const mainSets = {
-    ladder: {
-            reps: 6,
-            distancePerRep: this.getMainSetDistance() / mainSets.ladder.reps,
-            pace: this.
-            },
-}
-
-/* WORKOUT SCHEMA */
-const swimSchema = {
-    warmUp: {
-        time: "int",
-        reps: "int",
-        stroke: "string",
-        distance: "int",
-    },
-    mainSet: {
-        time: "int",
-        reps: "int",
-        stroke: "string",
-        distance: "int",
-    },
-    coolDown: {
-        time: "int",
-        reps: "int",
-        stroke: "string",
-        distance: "int",
+        return swim
     }
 }
 
-function buildWorkout(swimObj) {
-    let swim = swimSchema
-    // let warmUp = {}
-    // let mainSet = {}
-    // let coolDown = {}
+const workout = new Swim(5000, 120, 'br', 'drill')
 
-    // total distance logic
-    swim.warmUp.distance = swimObj.getWarmUpDistance()
-    swim.mainSet.distance = swimObj.getMainSetDistance()
-    swim.coolDown.distance = swimObj.getCoolDownDistance()
-
-    // time logic
-    swim.warmUp.time = swimObj.getWarmUpTime()
-    swim.mainSet.time = swimObj.getMainSetTime()
-    swim.coolDown.time = swimObj.getCoolDownTime()
-
-    // stroke logic
-    if (swimObj.mainStroke == 'fr') {
-        swim.warmUp.stroke = 'Freestyle'
-        swim.mainSet.stroke = 'Freestyle'
-        swim.coolDown.stroke = 'Freestyle'
-        
-    } else if (swimObj.mainStroke == 'fl') {
-        swim.warmUp.stroke = 'Freestyle'
-        swim.mainSet.stroke = 'Butterfly'
-        swim.coolDown.stroke = 'Freestyle'
-        
-    } else if (swimObj.mainStroke == 'ba') {
-        swim.warmUp.stroke = 'Freestyle'
-        swim.mainSet.stroke = 'Backstroke'
-        swim.coolDown.stroke = 'Freestyle'
-        
-    } else if (swimObj.mainStroke == 'br') {
-        swim.warmUp.stroke = 'Freestyle'
-        swim.mainSet.stroke = 'Breaststroke'
-        swim.coolDown.stroke = 'Freestyle'
-
-    }
-
-
-    // return swim
-    console.log(swim)
-    // console.log(workoutObj)
-}
-
-buildWorkout(workout)
+console.log(workout.buildWorkout())
+// console.log(workout.randomSet(workout.coolDownSets))
