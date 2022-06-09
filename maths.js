@@ -6,6 +6,34 @@ class Swim {
         this.target = target // [sprint, endurance, drill]
         this.strokeList = [ 'fr', 'fl', 'ba', 'br' ]
         this.targetList = [ 'spr', 'end', 'dri' ]
+        this.swimSchema = {
+                            warmUp: {
+                                time: "int",
+                                reps: "int",
+                                stroke: "string",
+                                distance: "int",
+                            },
+                            mainSet: {
+                                time: "int",
+                                reps: "int",
+                                stroke: "string",
+                                distance: "int",
+                            },
+                            coolDown: {
+                                time: "int",
+                                reps: "int",
+                                stroke: "string",
+                                distance: "int",
+                            }
+                        }
+        this.mainSets = {
+                        ladder: {
+                                reps: 6,
+                                distancePerRep: this.getMainSetDistance() / mainSets.ladder.reps,
+                                pace: "int" ,
+                                rest: "int"
+                                },
+                        }
     }
     splitDistance() {
         let warmUp = this.distance / 4 // 25%
@@ -43,16 +71,51 @@ class Swim {
     convertTimeToHours() {
         return Math.floor(this.time / 60)
     }
-    returnWorkoutObject() {
-        return {
-            warmUp: "",
-            mainSet: "",
-            coolDown: "",
-        }
-    }
+    // returnWorkoutObject() {
+    //     return {
+    //         warmUp: "",
+    //         mainSet: "",
+    //         coolDown: "",
+    //     }
+    // }
     outputList() {
         return [this.distance, this.time, this.mainStroke, this.target]
     }
+    buildWorkout() {
+        let swim = this.swimSchema
+    
+        // total distance logic
+        swim.warmUp.distance = this.getWarmUpDistance()
+        swim.mainSet.distance = this.getMainSetDistance()
+        swim.coolDown.distance = this.getCoolDownDistance()
+    
+        // time logic
+        swim.warmUp.time = this.getWarmUpTime()
+        swim.mainSet.time = this.getMainSetTime()
+        swim.coolDown.time = this.getCoolDownTime()
+    
+        // stroke logic
+        if (swimObj.mainStroke == 'fr') {
+            swim.warmUp.stroke = 'Freestyle'
+            swim.mainSet.stroke = 'Freestyle'
+            swim.coolDown.stroke = 'Freestyle'
+            
+        } else if (swimObj.mainStroke == 'fl') {
+            swim.warmUp.stroke = 'Freestyle'
+            swim.mainSet.stroke = 'Butterfly'
+            swim.coolDown.stroke = 'Freestyle'
+            
+        } else if (swimObj.mainStroke == 'ba') {
+            swim.warmUp.stroke = 'Freestyle'
+            swim.mainSet.stroke = 'Backstroke'
+            swim.coolDown.stroke = 'Freestyle'
+            
+        } else if (swimObj.mainStroke == 'br') {
+            swim.warmUp.stroke = 'Freestyle'
+            swim.mainSet.stroke = 'Breaststroke'
+            swim.coolDown.stroke = 'Freestyle'
+    
+        }
 }
 
 let workout = new Swim(5000, 120, 'br', 'drill')
@@ -62,13 +125,13 @@ let workout = new Swim(5000, 120, 'br', 'drill')
 // console.log(swim.convertTimeToSeconds())
 // console.log(swim.convertTimeToHours())
 
-const mainSets = [
-    {
-    name: 'ladder',
-    reps: 6,
-    distancePerRep: this.getMainSetDistance() / ?,
-    },
-]
+const mainSets = {
+    ladder: {
+            reps: 6,
+            distancePerRep: this.getMainSetDistance() / mainSets.ladder.reps,
+            pace: this.
+            },
+}
 
 /* WORKOUT SCHEMA */
 const swimSchema = {
@@ -77,21 +140,18 @@ const swimSchema = {
         reps: "int",
         stroke: "string",
         distance: "int",
-        pace: "int",
     },
     mainSet: {
         time: "int",
         reps: "int",
         stroke: "string",
         distance: "int",
-        pace: "int",
     },
     coolDown: {
         time: "int",
         reps: "int",
         stroke: "string",
         distance: "int",
-        pace: "int",
     }
 }
 
