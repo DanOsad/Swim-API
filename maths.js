@@ -2,96 +2,122 @@ class Swim {
     constructor( distance, time, mainStroke, target, difficulty ) {
         this.distance = distance // meters
         this.time = time // minutes
-        this.mainStroke = mainStroke // [fr,fl,ba,br]
+        this.mainStroke = mainStroke // [fr,fl,ba,br,im]
         this.target = target // [sprint, endurance, drill]
         this.difficulty = difficulty // [beg, adv, exp]
         this.strokeList = [ 'fr', 'fl', 'ba', 'br', 'im' ]
         this.targetList = [ 'spr', 'end', 'dri' ]
         this.swimSchema = {
+                            totalTime: "obj",
+                            mainStroke: "string",
+                            difficulty: "string",
+                            target: "string",
                             warmUp: {
                                 time: "int",
-                                reps: "int",
                                 stroke: "string",
                                 distance: "int",
                             },
                             mainSet: {
                                 time: "int",
-                                reps: "int",
                                 stroke: "string",
                                 distance: "int",
                             },
                             coolDown: {
                                 time: "int",
-                                reps: "int",
                                 stroke: "string",
                                 distance: "int",
                             }
-                        }
+        }
         this.warmUpSets = {
                         easy: {
                             name: "Easy",
-                            reps: 4,
+                            repDist: 200,
+                            reps: "int",
                             pace: "int" , // calculated later
                             rest: "int", // calculated later
                         },
                         kick: {
                             name: "Kick",
-                            reps: 10,
+                            repDist: 200,
+                            reps: "int",
                             pace: "int" , // calculated later
                             rest: "int", // calculated later
                         },
                         buildUp: {
                             name: "Build-Up",
-                            reps: 10,
+                            repDist: 100,
+                            reps: "int",
                             pace: "int" , // calculated later
                             rest: "int", // calculated later
                         },
         }
         this.mainSets = {
-                        ladder: {
-                            name: "Ladder",
-                            reps: 6,
-                            pace: "int" , // calculated later
-                            rest: "int", // calculated later
-                        },
+                        // ladder: {
+                        //     name: "Ladder",
+                        //     dist: "int",
+                        //     reps: 6,
+                        //     pace: "int" , // calculated later
+                        //     rest: "int", // calculated later
+                        // },
                         timedSprints: {
                             name: "Timed Sprints",
-                            reps: 10,
+                            repDist: 50,
+                            reps: "int",
                             pace: "int" , // calculated later
                             rest: "int", // calculated later
                         },
                         highEffort: {
                             name: "High Effort",
-                            reps: 5,
+                            repDist: 200,
+                            reps: "int",
                             pace: "int" , // calculated later
                             rest: "int", // calculated later
                         },
                         distance: {
                             name: "Distance",
-                            reps: 1,
+                            // repDist: this.swimSchema.mainSet.distance / 2, // PROBLEM ********
+                            reps: "int",
                             pace: "int" , // calculated later
                             rest: "int", // calculated later
                         },
         }
         this.coolDownSets = {
-                        ladder: {
-                            name: "Ladder",
-                            reps: 5,
-                            pace: "int" , // calculated later
-                            rest: "int", // calculated later
-                        },
+                        // ladder: {
+                        //     name: "Ladder",
+                        //     dist: "int",
+                        //     reps: 5,
+                        //     pace: "int" , // calculated later
+                        //     rest: "int", // calculated later
+                        // },
                         buildDown: {
                             name: "Build-Down",
-                            reps: 5,
+                            repDist: 100,
+                            reps: "int",
                             pace: "int" , // calculated later
                             rest: "int", // calculated later
                         },
                         distance: {
                             name: "Distance",
-                            reps: 1,
+                            // repDist: this.swimSchema.coolDown.distance / 2, // PROBLEM ********
+                            reps: "int",
                             pace: "int" , // calculated later
                             rest: "int", // calculated later
                         },
+        }
+        this.beginnerPace = {
+            "warmUp" : 180,
+            "mainSet" : 140,
+            "coolDown" : 180,
+        }
+        this.advancedPace = {
+            "warmUp" : 150,
+            "mainSet" : 120,
+            "coolDown" : 150,
+        }
+        this.expertPace = {
+            "warmUp" : 120,
+            "mainSet" : 105,
+            "coolDown" : 120,
         }
     }
     calculateSet(set) {
@@ -128,11 +154,11 @@ class Swim {
     getCoolDownTime() {
         return this.splitTime()[2]
     }
-    convertTimeToSeconds() {
+    minutesToSeconds() {
         return Math.floor(this.time * 60)
     }
-    convertTimeToHours() {
-        return Math.floor(this.time / 60)
+    minutesToHours() {
+        return +(this.time / 60).toFixed(2)
     }
     randomSet(setType) {
         let keys = Object.keys(setType)
@@ -141,59 +167,175 @@ class Swim {
     outputList() {
         return [this.distance, this.time, this.mainStroke, this.target]
     }
-    buildWorkout() {
-        let swim = this.swimSchema
-    
-        // total distance logic
-        swim.warmUp.distance = this.getWarmUpDistance()
-        swim.mainSet.distance = this.getMainSetDistance()
-        swim.coolDown.distance = this.getCoolDownDistance()
-    
-        // time logic
-        swim.warmUp.time = this.getWarmUpTime()
-        swim.mainSet.time = this.getMainSetTime()
-        swim.coolDown.time = this.getCoolDownTime()
-
-        /* warmUp logic */
-        swim.warmUp.set = this.randomSet(this.warmUpSets) // get random warmUp set
-        
-        /* mainSet logic */
-        swim.mainSet.set = this.randomSet(this.mainSets) // get random mainSet
-        
-        /* coolDown logic */
-        swim.coolDown.set = this.randomSet(this.coolDownSets) // get random coolDown set
-
-
-        // stroke logic
-        if (this.mainStroke == 'fr') {
-            swim.warmUp.stroke = 'Freestyle'
-            swim.mainSet.stroke = 'Freestyle'
-            swim.coolDown.stroke = 'Freestyle'
-            
-        } else if (this.mainStroke == 'fl') {
-            swim.warmUp.stroke = 'Freestyle'
-            swim.mainSet.stroke = 'Butterfly'
-            swim.coolDown.stroke = 'Freestyle'
-            
-        } else if (this.mainStroke == 'ba') {
-            swim.warmUp.stroke = 'Freestyle'
-            swim.mainSet.stroke = 'Backstroke'
-            swim.coolDown.stroke = 'Freestyle'
-            
-        } else if (this.mainStroke == 'br') {
-            swim.warmUp.stroke = 'Freestyle'
-            swim.mainSet.stroke = 'Breaststroke'
-            swim.coolDown.stroke = 'Freestyle'
-    
-        } else if (this.mainStroke == 'im') {
-            swim.warmUp.stroke = 'Freestyle'
-            swim.mainSet.stroke = 'Individual Medley'
-            swim.coolDown.stroke = 'Freestyle'
-    
+    setMainStroke() {
+        switch (this.mainStroke) {
+            case 'fr':
+                this.swimSchema.mainStroke = 'Freestyle'
+                this.swimSchema.warmUp.stroke = 'Freestyle'
+                this.swimSchema.mainSet.stroke = 'Freestyle'
+                this.swimSchema.coolDown.stroke = 'Freestyle'
+                break
+            case 'fl':
+                this.swimSchema.mainStroke = 'Butterfly'
+                this.swimSchema.warmUp.stroke = 'Freestyle'
+                this.swimSchema.mainSet.stroke = 'Butterfly'
+                this.swimSchema.coolDown.stroke = 'Freestyle'
+                break
+            case 'ba':
+                this.swimSchema.mainStroke = 'Backstroke'
+                this.swimSchema.warmUp.stroke = 'Freestyle'
+                this.swimSchema.mainSet.stroke = 'Backstroke'
+                this.swimSchema.coolDown.stroke = 'Freestyle'
+                break
+            case 'br':
+                this.swimSchema.mainStroke = 'Breaststroke'
+                this.swimSchema.warmUp.stroke = 'Freestyle'
+                this.swimSchema.mainSet.stroke = 'Breaststroke'
+                this.swimSchema.coolDown.stroke = 'Freestyle'
+                break
+            case 'im':
+                this.swimSchema.mainStroke = 'Individual Medley'
+                this.swimSchema.warmUp.stroke = 'Freestyle'
+                this.swimSchema.mainSet.stroke = 'Individual Medley'
+                this.swimSchema.coolDown.stroke = 'Freestyle'
+                break
+            }
+    }
+    setTotalTime() {
+        this.swimSchema.totalTime = {
+            inSeconds: this.minutesToSeconds(),
+            inMinutes: this.time,
+            inHours: this.minutesToHours(),
         }
-        return swim
+    }
+    setTarget() {
+        switch (this.target) {
+            case 'spr':
+                this.swimSchema.target = 'Sprint'
+                break
+            case 'end':
+                this.swimSchema.target = 'Endurance'
+                break
+            case 'dri':
+                this.swimSchema.target = 'Drill'
+                break
+        }
+    }
+    setDiffculty() {
+        switch (this.difficulty) {
+            case 'beg':
+                this.swimSchema.difficulty = 'Beginner'
+                break
+            case 'adv':
+                this.swimSchema.difficulty = 'Advanced'
+                break
+            case 'exp':
+                this.swimSchema.difficulty = 'Expert'
+                break
+            default:
+                this.swimSchema.difficulty = 'Unknown'
+            }
+    }
+    buildWarmUp() {
+        this.swimSchema.warmUp.distance = this.getWarmUpDistance()
+        this.swimSchema.warmUp.time = this.getWarmUpTime() * 60 //convert to seconds
+        this.swimSchema.warmUp.set = this.randomSet(this.warmUpSets)
+        if (!this.swimSchema.warmUp.set.repDist) {
+            this.swimSchema.warmUp.set.repDist = this.swimSchema.warmUp.distance / 2
+        }
+        this.swimSchema.warmUp.set.reps = Math.floor(this.swimSchema.warmUp.distance / this.swimSchema.warmUp.set.repDist)
+        //  set pace
+        switch (this.difficulty) {
+            case 'beg':
+                this.swimSchema.warmUp.set.pace = this.beginnerPace.warmUp
+                this.swimSchema.warmUp.set.rest = Math.round((this.swimSchema.warmUp.time - (this.swimSchema.warmUp.set.reps * this.swimSchema.warmUp.set.pace)) / this.swimSchema.warmUp.set.reps)
+                break
+            case 'adv':
+                this.swimSchema.warmUp.set.pace = this.advancedPace.warmUp
+                this.swimSchema.warmUp.set.rest = Math.round((this.swimSchema.warmUp.time - (this.swimSchema.warmUp.set.reps * this.swimSchema.warmUp.set.pace)) / this.swimSchema.warmUp.set.reps)
+                break
+            case 'exp':
+                this.swimSchema.warmUp.set.pace = this.expertPace.warmUp
+                this.swimSchema.warmUp.set.rest = Math.round((this.swimSchema.warmUp.time - (this.swimSchema.warmUp.set.reps * this.swimSchema.warmUp.set.pace)) / this.swimSchema.warmUp.set.reps)
+                break
+        }
+    }
+    buildMainSet() {
+        this.swimSchema.mainSet.distance = this.getMainSetDistance()
+        this.swimSchema.mainSet.time = this.getMainSetTime() * 60 //convert to seconds
+        this.swimSchema.mainSet.set = this.randomSet(this.mainSets)
+        if (!this.swimSchema.mainSet.set.repDist) {
+            this.swimSchema.mainSet.set.repDist = this.swimSchema.mainSet.distance / 2
+        }
+        this.swimSchema.mainSet.set.reps = Math.floor(this.swimSchema.mainSet.distance / this.swimSchema.mainSet.set.repDist)
+        //  set pace
+        switch (this.difficulty) {
+            case 'beg':
+                this.swimSchema.mainSet.set.pace = this.beginnerPace.mainSet
+                this.swimSchema.warmUp.set.rest = Math.round((this.swimSchema.mainSet.time - (this.swimSchema.mainSet.set.reps * this.swimSchema.mainSet.set.pace)) / this.swimSchema.mainSet.set.reps)
+                break
+            case 'adv':
+                this.swimSchema.mainSet.set.pace = this.advancedPace.mainSet
+                this.swimSchema.mainSet.set.rest = Math.round((this.swimSchema.mainSet.time - (this.swimSchema.mainSet.set.reps * this.swimSchema.mainSet.set.pace)) / this.swimSchema.mainSet.set.reps)
+                break
+            case 'exp':
+                this.swimSchema.mainSet.set.pace = this.expertPace.mainSet
+                this.swimSchema.mainSet.set.rest = Math.round((this.swimSchema.mainSet.time - (this.swimSchema.mainSet.set.reps * this.swimSchema.mainSet.set.pace)) / this.swimSchema.mainSet.set.reps)
+                break
+        }
+    }
+    buildCoolDown() {
+        this.swimSchema.coolDown.distance = this.getCoolDownDistance()
+        this.swimSchema.coolDown.time = this.getCoolDownTime() * 60 //convert to seconds
+        this.swimSchema.coolDown.set = this.randomSet(this.coolDownSets)
+        if (!this.swimSchema.coolDown.set.repDist) {
+            this.swimSchema.coolDown.set.repDist = this.swimSchema.coolDown.distance / 2
+        }
+        this.swimSchema.coolDown.set.reps = Math.floor(this.swimSchema.coolDown.distance / this.swimSchema.coolDown.set.repDist)
+
+        //  set pace
+        switch (this.difficulty) {
+            case 'beg':
+                this.swimSchema.coolDown.set.pace = this.beginnerPace.coolDown
+                this.swimSchema.coolDown.set.rest = Math.round((this.swimSchema.coolDown.time - (this.swimSchema.coolDown.set.reps * this.swimSchema.coolDown.set.pace)) / this.swimSchema.coolDown.set.reps)
+                break
+            case 'adv':
+                this.swimSchema.coolDown.set.pace = this.advancedPace.coolDown
+                this.swimSchema.coolDown.set.rest = Math.round((this.swimSchema.coolDown.time - (this.swimSchema.coolDown.set.reps * this.swimSchema.coolDown.set.pace)) / this.swimSchema.coolDown.set.reps)
+                break
+            case 'exp':
+                this.swimSchema.coolDown.set.pace = this.expertPace.coolDown
+                this.swimSchema.coolDown.set.rest = Math.round((this.swimSchema.coolDown.time - (this.swimSchema.coolDown.set.reps * this.swimSchema.coolDown.set.pace)) / this.swimSchema.coolDown.set.reps)
+                break
+        }
+    }
+    buildSwim() {
+        this.buildWarmUp()
+        this.buildMainSet()
+        this.buildCoolDown()
+        this.setTotalTime()
+        this.setTarget()
+        this.setDiffculty()
+        this.setMainStroke()
+        return this.swimSchema
     }
 }
 
+const testCases = [
+    new Swim(2000,60,'fr','dri', 'exp'),
+]
+
+const testBuildSwim = sets => {
+    sets.forEach(
+        set => {
+            console.log(set.buildSwim())
+        }
+    )
+}
+
+testBuildSwim(testCases) // PRINTS SAMPLE SWIM WORKOUTS TO THE CONSOLE
+
 // EXPORT
 module.exports = Swim
+
+// work on remaining distance leftover, use as easy swimming at the end of a set

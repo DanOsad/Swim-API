@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Swim Workout Generator</title>
+</head>
+<body>
+    <div id="root">
+        <header>
+            <div id="logo">
+                <h3>Logo</h3>
+            </div>
+            <div id="title">
+                <h2>SWIM API</h2>
+            </div>
+            <div id="nav">
+                <nav>
+                    <ul>
+                        <li class="navItem">Create</li>
+                        <li class="navItem">Random</li>
+                        <li class="navItem">About</li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        <main>
+            <form action="/api" method="POST" id="createSwimForm">
+                <!-- DISTANCE INPUT - TYPE: TEXTFIELD/NUMBER IN METERS -->
+                <div class="inputField">
+                    <label for="distanceInput">Distance (Meters):</label>
+                    <input name="distance" id="distanceInput" value="">
+                  </div>
+                  <!-- TIME INPUT - TYPE: TEXTFIELD/NUMBER IN MINUTES -->
+                <div class="inputField">
+                    <label for="timeInput">Duration (Minutes):</label>
+                    <input name="time" id="timeInput" value="">
+                  </div>
+                  <!-- MAINSTROKE INPUT - TYPE: DROPDOWN (FREE,FLY,BREAST,BACK,IM) -->
+                <div class="inputField">
+                    <label for="mainStrokeInput">Main Stroke:</label>
+                    <input name="mainStroke" id="mainStrokeInput" value="">
+                  </div>
+                  <!-- TARGET INPUT - TYPE: DROPDOWN (SPRINT,ENDURANCE,DRILL)-->
+                <div class="inputField">
+                    <label for="targetInput">Training Target:</label>
+                    <input name="target" id="targetInput" value="">
+                  </div>
+                  <!-- DIFFICULTY INPUT - TYPE: DROPDOWN (BEGINNER, ADVANCED, EXPERT) -->
+                <div class="inputField">
+                    <label for="difficultyInput">Difficulty:</label>
+                    <input name="difficulty" id="difficultyInput" value="">
+                  </div>
+                <button type="submit" id="submitBtn">Submit</button>
+            </form>
+        </main>
+        <footer>
+            <h4>© Daniel Osadtsuk 2022</h4>
+        </footer>
+    </div>
+    <script src="script.js" type="text/javascript"></script>
+</body>
+</html>
+
+distance,
+        time,
+        stroke,
+        target,
+        difficulty
