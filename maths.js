@@ -52,13 +52,13 @@ class Swim {
                         },
         }
         this.mainSets = {
-                        // ladder: {
-                        //     name: "Ladder",
-                        //     dist: "int",
-                        //     reps: 6,
-                        //     pace: "int" , // calculated later
-                        //     rest: "int", // calculated later
-                        // },
+                        ladder: {
+                            name: "Ladder",
+                            repDist: "arr",
+                            reps: "int",
+                            pace: "int" , // calculated later
+                            rest: "int", // calculated later
+                        },
                         timedSprints: {
                             name: "Timed Sprints",
                             repDist: 50,
@@ -82,13 +82,13 @@ class Swim {
                         },
         }
         this.coolDownSets = {
-                        // ladder: {
-                        //     name: "Ladder",
-                        //     dist: "int",
-                        //     reps: 5,
-                        //     pace: "int" , // calculated later
-                        //     rest: "int", // calculated later
-                        // },
+                        ladder: {
+                            name: "Ladder",
+                            repDist: "arr",
+                            reps: "int",
+                            pace: "int" , // calculated later
+                            rest: "int", // calculated later
+                        },
                         buildDown: {
                             name: "Build-Down",
                             repDist: 100,
@@ -259,6 +259,25 @@ class Swim {
                 this.swimSchema.warmUp.set.rest = Math.round((this.swimSchema.warmUp.time - (this.swimSchema.warmUp.set.reps * this.swimSchema.warmUp.set.pace)) / this.swimSchema.warmUp.set.reps)
                 break
         }
+
+        // build ladder
+        switch (this.swimSchema.warmUp.set.name) {
+            case 'Ladder':
+                const buildLadder = distance => {
+                    let originalDistance = distance
+                    let ladder = []
+                    while (distance > 100) {
+                        ladder.push(distance/2)
+                        distance -= distance/2
+                    }
+                    let result = ladder.map(num=>Math.floor(num/50)*50)
+                    return [...result, originalDistance-result.reduce((a,c)=>a+c)]
+                     // returns a list of distances, the last element will be the remaining distance that is to be easy swimming.
+                }
+                this.swimSchema.coolDown.set.repDist = buildLadder(this.swimSchema.warmUp.distance)
+                this.swimSchema.warmUp.set.reps = this.swimSchema.warmUp.set.repDist.length-1
+                break
+        }
     }
     buildMainSet() {
         this.swimSchema.mainSet.distance = this.getMainSetDistance()
@@ -281,6 +300,25 @@ class Swim {
             case 'exp':
                 this.swimSchema.mainSet.set.pace = this.expertPace.mainSet
                 this.swimSchema.mainSet.set.rest = Math.round((this.swimSchema.mainSet.time - (this.swimSchema.mainSet.set.reps * this.swimSchema.mainSet.set.pace)) / this.swimSchema.mainSet.set.reps)
+                break
+        }
+
+        // build ladder
+        switch (this.swimSchema.mainSet.set.name) {
+            case 'Ladder':
+                const buildLadder = distance => {
+                    let originalDistance = distance
+                    let ladder = []
+                    while (distance > 100) {
+                        ladder.push(distance/2)
+                        distance -= distance/2
+                    }
+                    let result = ladder.map(num=>Math.floor(num/50)*50)
+                    return [...result, originalDistance-result.reduce((a,c)=>a+c)]
+                     // returns a list of distances, the last element will be the remaining distance that is to be easy swimming.
+                }
+                this.swimSchema.mainSet.set.repDist = buildLadder(this.swimSchema.mainSet.distance)
+                this.swimSchema.mainSet.set.reps = this.swimSchema.mainSet.set.repDist.length-1
                 break
         }
     }
@@ -308,6 +346,25 @@ class Swim {
                 this.swimSchema.coolDown.set.rest = Math.round((this.swimSchema.coolDown.time - (this.swimSchema.coolDown.set.reps * this.swimSchema.coolDown.set.pace)) / this.swimSchema.coolDown.set.reps)
                 break
         }
+
+        // build ladder
+        switch (this.swimSchema.coolDown.set.name) {
+            case 'Ladder':
+                const buildLadder = distance => {
+                    let originalDistance = distance
+                    let ladder = []
+                    while (distance > 100) {
+                        ladder.push(distance/2)
+                        distance -= distance/2
+                    }
+                    let result = ladder.map(num=>Math.floor(num/50)*50)
+                    return [...result, originalDistance-result.reduce((a,c)=>a+c)]
+                     // returns a list of distances, the last element will be the remaining distance that is to be easy swimming.
+                }
+                this.swimSchema.coolDown.set.repDist = buildLadder(this.swimSchema.coolDown.distance)
+                this.swimSchema.coolDown.set.reps = this.swimSchema.coolDown.set.repDist.length-1
+                break
+        }
     }
     buildSwim() {
         this.buildWarmUp()
@@ -328,6 +385,16 @@ const testCases = [
 const testBuildSwim = sets => {
     sets.forEach(
         set => {
+            // let newSet = set.buildSwim()
+            // if (newSet.warmUp.set.name == 'Ladder') {
+            //     console.log(newSet.warmUp.set.repDist)
+            // } else if (newSet.mainSet.set.name == 'Ladder') {
+            //     console.log(newSet.mainSet.set.repDist)
+            // } else if (newSet.coolDown.set.name == 'Ladder') {
+            //     console.log(newSet.coolDown.set.repDist)
+            // } else {
+            //     console.log('The set is not a ladder.')
+            // }
             console.log(set.buildSwim())
         }
     )
